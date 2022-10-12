@@ -1,0 +1,29 @@
+Lexer หน้าที่หลักคือแกะคำแต่ละคำออกจากกันเป็นคำย่อยๆ 
+    ปกติจะทำงานแบ่งคำทีละคำๆไป 
+    และมีหน้าที่คอยบอกว่าตัดแบ่งออกเป็นคำ
+    จนไม่เหลืออะไรให้ทำแล้วนะจ๊ะ
+
+Parser ทำหน้าที่คอยตรวจสอบ
+    ว่าคำสั่งที่เราป้อนเข้ามามันถูก
+    ตามที่หลักไวยกรณ์ของภาษาโปรแกรมหรือเปล่า 
+    วงเล็บถูกที่หรือเปล่า บลาๆ
+
+Interpreter ใช้ในการทำงานตามคำสั่งทีละบรรทัด(Statement) 
+    โดยไม่ต้องรอให้อ่านหมดไฟล์ก่อน 
+    เพิ่มเมื่อไหร่  ทำงานเมื่อนั้นไม่ได้เช็คไวยกรณ์ไว้รอ 
+    โดยปกติมักจะเป็นภาษาที่ทำงานข้าม Platform ได้ เช่น JavaScript
+
+Compiler ใช้แปลงภาษาโปรแกรมของเราเป็นภาษาอื่น
+    โดยต้องรอให้เขียนถูกหลักไวยกรณ์ทั้งหมดก่อน 
+    (ต่างจากภาษาพวกที่ใช้ Interpreter 
+    ทำงานได้โดยไม่ต้องรู้ว่าบรรทัดต่อไปถูกหลักไวยกรณ์หรือเปล่า) 
+    โดยโปรแกรมกลุ่มนี้มักจะอยู่ในพวกที่เป็น Native Application 
+    (เขียนด้วยภาษาที่ใช้กับ OS นั้นๆ) 
+    เช่น C# คอมไฟล์ได้ Excecutable ไฟล์ ดับเบิลคลิ๊กเช้าดูได้
+
+
+A tokenizer breaks a stream of text into tokens, usually by looking for whitespace (tabs, spaces, new lines).
+
+A lexer is basically a tokenizer, but it usually attaches extra context to the tokens -- this token is a number, that token is a string literal, this other token is an equality operator.
+
+A parser takes the stream of tokens from the lexer and turns it into an abstract syntax tree representing the (usually) program represented by the original text.
