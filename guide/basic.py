@@ -1,6 +1,6 @@
 """ IMPORT """
 
-from lib2to3.pgen2 import token
+#from lib2to3.pgen2 import token
 from string_with_arrows import *
 
 """ CONSTANTS """
@@ -41,13 +41,13 @@ class Position:
         self.fn = fn
         self.ftxt = ftxt
 
-    def advance(self, current_char):
+    def advance(self, current_char=None):
         self.idx += 1
         self.col += 1
 
         if current_char == '\n':
             self.ln += 1
-            self.col += 0
+            self.col = 0
         
         return self
 
@@ -155,9 +155,9 @@ class Lexer:
             self.advance()
 
         if dot_count == 0:  #   check float if it has dot.
-            return Token(TT_INT, int(num_str, pos_start, self.pos))
+            return Token(TT_INT, int(num_str), pos_start, self.pos)
         else:
-            return Token(TT_FLOAT, float(num_str, pos_start, self.pos))
+            return Token(TT_FLOAT, float(num_str), pos_start, self.pos)
 
 """
     NODES
@@ -210,10 +210,10 @@ class ParseResult:
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
-        self.tok_idx = 1
+        self.tok_idx = -1
         self.advance()
         
-    def advance(self):  #เลื่อนcurrent tokens
+    def advance(self, ):  #เลื่อนcurrent tokens
         self.tok_idx += 1
         if self.tok_idx < len(self.tokens):
             self.current_tok = self.tokens[self.tok_idx]
@@ -282,4 +282,4 @@ def run(fn, text):
     parser = Parser(tokens)
     ast = parser.parse()
 
-    return tokens, error
+    return ast.node, ast.error #tokens, error
