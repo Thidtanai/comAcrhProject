@@ -136,7 +136,7 @@ def run(fn, text):
 
 # BUG NOW #
 
-"""
+""" Ploblem1    <FIXED> <use isnumeric -> DIGITS>
     command > add 1 233 44
     File <stdin>, line 1    <- why use 233 will error?
     command > add 1 23 4
