@@ -75,10 +75,13 @@ class Token:
 class Lexer:
     def __init__(self, fn, text):
         self.fn = fn
-        self.text = text
+        self.text = text.split()
         self.pos = Position(-1, 0, -1, fn, text)
         self.current_char = None
         self.advance()
+        
+        self.current_val = 0
+        self.func = None
         
     def advance(self):  # for moving current char to next char.
         self.pos.advance(self.current_char)
@@ -90,11 +93,29 @@ class Lexer:
         while self.current_char != None:
             if self.current_char in '\t':   # check if space or blank skip them.
                 self.advance()
+                
             elif self.current_char == 'add':
                 tokens.append(Token(TT_FUNC))
+                self.func = 'add'
                 self.advance()  
+                
             elif self.current_char in DIGITS:
-                pass
+                if self.func == 'add':
+                    if self.current_val == 0:
+                        tokens.append(Token(TT_RD))
+                        self.current_val += 1
+                        self.advance()
+                    elif self.current_val == 1:
+                        tokens.append(Token(TT_RS1))
+                        self.current_val += 1
+                        self.advance()
+                    elif self.current_val == 2:
+                        tokens.append(Token(TT_RS2))
+                        self.current_val += 1
+                        self.advance()
+                    else :
+                        print("error")
+                    
             else:
                 pos_start = self.pos.copy()
                 char = self.current_char
@@ -109,5 +130,5 @@ class Lexer:
 def run(fn, text):
     lexer = Lexer(fn, text)
     tokens, error = lexer.make_tokens()
-        
+    
     return tokens, error

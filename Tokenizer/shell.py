@@ -1,8 +1,8 @@
-from riscToken import *
+import riscToken
 
 while True:
     text = input('command > ')
-    result, error = basic.run('<stdin>', text)
+    result, error = riscToken.run('<stdin>', text)
     
     if error: print(error.as_string())
-    else: print(resutl)
+    else: print(result)
