@@ -1,0 +1,3 @@
+Poom - ทำ Tokenize ให้ใช้ได้กับงานเรา 
+ด้วยการ แยก Element ของ Assembly 
+โดยไม่ต้องสนใจว่าเป็น Function อะไรก่อน
