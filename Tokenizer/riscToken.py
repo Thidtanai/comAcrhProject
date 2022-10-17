@@ -99,7 +99,7 @@ class Lexer:
                 self.func = 'add'
                 self.advance()  
                 
-            elif self.current_char in DIGITS:
+            elif self.current_char.isnumeric():
                 if self.func == 'add':
                     if self.current_val == 0:
                         tokens.append(Token(TT_RD, self.current_char))
