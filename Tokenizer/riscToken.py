@@ -132,3 +132,18 @@ def run(fn, text):
     tokens, error = lexer.make_tokens()
     
     return tokens, error
+
+
+# BUG NOW #
+
+"""
+    command > add 1 233 44
+    File <stdin>, line 1    <- why use 233 will error?
+    command > add 1 23 4
+    [FUNC:add, RD:1, RS1:23, RS2:4]
+    command > add 123 
+    [FUNC:add, RD:123]
+    command > add 1 233
+    File <stdin>, line 1
+    command > add 
+"""
