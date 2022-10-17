@@ -95,22 +95,22 @@ class Lexer:
                 self.advance()
                 
             elif self.current_char == 'add':
-                tokens.append(Token(TT_FUNC))
+                tokens.append(Token(TT_FUNC, self.current_char))
                 self.func = 'add'
                 self.advance()  
                 
             elif self.current_char in DIGITS:
                 if self.func == 'add':
                     if self.current_val == 0:
-                        tokens.append(Token(TT_RD))
+                        tokens.append(Token(TT_RD, self.current_char))
                         self.current_val += 1
                         self.advance()
                     elif self.current_val == 1:
-                        tokens.append(Token(TT_RS1))
+                        tokens.append(Token(TT_RS1, self.current_char))
                         self.current_val += 1
                         self.advance()
                     elif self.current_val == 2:
-                        tokens.append(Token(TT_RS2))
+                        tokens.append(Token(TT_RS2, self.current_char))
                         self.current_val += 1
                         self.advance()
                     else :
