@@ -73,13 +73,11 @@ TT_RS2      = 'RS2'
 TT_IMM      = 'IMM'
 
 class Token:
-    def __init__(self, type, value=None):
-        self.type = type
-        self.value = value
+    def __init__(self, text):
+        self.text = text
         
     def __repr__(self):
-        if self.value: return f'{self.type}:{self.value}'
-        return f'{self.type}'
+        return f'{self.text}'
 
 """ 
     LEXER
@@ -106,60 +104,10 @@ class Lexer:
         while self.current_char != None:
             if self.current_char in '\t':   # check if space or blank skip them.
                 self.advance()
-                
-            elif self.current_char in INTYPE:   # check it is type.
-                tokens.append(Token(TT_FUNC, self.current_char))
-                self.func = self.current_char
-                self.advance()  
-            
-            elif self.current_char.isnumeric(): # check it is imm.
-                if self.func in ITYPE:
-                    if self.current_val == 2:
-                        tokens.append(Token(TT_IMM, self.current_char))
-                        self.current_val += 1
-                        self.advance()
-                    else :
-                        print("error")
-                        pass
-
-            elif not(self.current_char.isalpha()):  # check is variable.
-                if self.func in ITYPE:
-                    if self.current_val == 0:
-                        tokens.append(Token(TT_RD, self.current_char))
-                        self.current_val += 1
-                        self.advance()
-                    elif self.current_val == 1:
-                        tokens.append(Token(TT_RS1, self.current_char))
-                        self.current_val += 1
-                        self.advance()
-                    else :
-                        print("error")
-                        self.advance()
-                        pass
-
-                if self.func in RTYPE:
-                    if self.current_val == 0:
-                        tokens.append(Token(TT_RD, self.current_char))
-                        self.current_val += 1
-                        self.advance()
-                    elif self.current_val == 1:
-                        tokens.append(Token(TT_RS1, self.current_char))
-                        self.current_val += 1
-                        self.advance()
-                    elif self.current_val == 2:
-                        tokens.append(Token(TT_RS2, self.current_char))
-                        self.current_val += 1
-                        self.advance()
-                    else :
-                        print("error")
-                        self.advance()
-                        pass
                     
             else:
-                pos_start = self.pos.copy()
-                char = self.current_char
-                self.advance()
-                return [], IllegalCharError(pos_start, self.pos, "'" + char + "'")
+                tokens.append(Token(self.current_char))
+                self.advance()  
         
         return tokens, None
         
