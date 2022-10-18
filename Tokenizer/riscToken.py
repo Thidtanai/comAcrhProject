@@ -121,22 +121,22 @@ class Lexer:
                     else :
                         print("error")
                         pass
-
-            elif not(self.current_char.isalpha()):  # check is variable.
-                if self.func in ITYPE:
-                    if self.current_val == 0:
-                        tokens.append(Token(TT_RD, self.current_char))
-                        self.current_val += 1
-                        self.advance()
-                    elif self.current_val == 1:
-                        tokens.append(Token(TT_RS1, self.current_char))
+                
+                if self.func in JTYPE:
+                    if self.current_val == 1:
+                        tokens.append(Token(TT_IMM, self.current_char))
                         self.current_val += 1
                         self.advance()
                     else :
                         print("error")
                         self.advance()
                         pass
+                if self.func in OTYPE:
+                    print("error")
+                    self.advance()
+                    pass
 
+            elif not(self.current_char.isalpha()):  # check is variable.
                 if self.func in RTYPE:
                     if self.current_val == 0:
                         tokens.append(Token(TT_RD, self.current_char))
@@ -154,6 +154,35 @@ class Lexer:
                         print("error")
                         self.advance()
                         pass
+
+                if self.func in ITYPE:
+                    if self.current_val == 0:
+                        tokens.append(Token(TT_RD, self.current_char))
+                        self.current_val += 1
+                        self.advance()
+                    elif self.current_val == 1:
+                        tokens.append(Token(TT_RS1, self.current_char))
+                        self.current_val += 1
+                        self.advance()
+                    else :
+                        print("error")
+                        self.advance()
+                        pass
+
+                if self.func in JTYPE:
+                    if self.current_val == 0:
+                        tokens.append(Token(TT_RD, self.current_char))
+                        self.current_val += 1
+                        self.advance()
+                    else :
+                        print("error")
+                        self.advance()
+                        pass
+
+                if self.func in OTYPE:
+                    print("error")
+                    self.advance()
+                    pass
                     
             else:
                 pos_start = self.pos.copy()
@@ -185,4 +214,10 @@ def run(fn, text):
     command > add 1 233
     File <stdin>, line 1
     command > add 
+"""
+
+# QUESTION #
+"""
+    1)ตอนใส่ค่าจะเหมือนrisc-vทั่วไปหรือตามตัวอย่าง
+    2)๋jalr ในj-typeต่างจากjalr ในi-typeไหม
 """
