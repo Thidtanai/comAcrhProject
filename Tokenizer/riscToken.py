@@ -2,7 +2,11 @@
     CONSTANTS
 """
 
-DIGITS =  '0123456789'
+DIGITS  =  '0123456789'
+RTYPE   =  ['add', 'nand'] 
+ITYPE   =  ['lw', 'sw', 'beq']
+JTYPE   =  ['jalr']
+OTYPE   =  ['halt', 'noop']
 
 """ 
     ERROR
@@ -94,13 +98,13 @@ class Lexer:
             if self.current_char in '\t':   # check if space or blank skip them.
                 self.advance()
                 
-            elif self.current_char == 'add':
+            elif self.current_char in RTYPE:
                 tokens.append(Token(TT_FUNC, self.current_char))
                 self.func = 'add'
                 self.advance()  
                 
             elif self.current_char.isnumeric():
-                if self.func == 'add':
+                if self.func in RTYPE:
                     if self.current_val == 0:
                         tokens.append(Token(TT_RD, self.current_char))
                         self.current_val += 1
@@ -115,6 +119,7 @@ class Lexer:
                         self.advance()
                     else :
                         print("error")
+                        pass
                     
             else:
                 pos_start = self.pos.copy()
