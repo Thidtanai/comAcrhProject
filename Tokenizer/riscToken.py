@@ -100,11 +100,11 @@ class Lexer:
                 
             elif self.current_char in RTYPE:
                 tokens.append(Token(TT_FUNC, self.current_char))
-                self.func = 'add'
+                self.func = self.current_char
                 self.advance()  
                 
             elif self.current_char.isnumeric():
-                if self.func in RTYPE:
+                if self.func == 'add' or self.func == 'nand':
                     if self.current_val == 0:
                         tokens.append(Token(TT_RD, self.current_char))
                         self.current_val += 1
