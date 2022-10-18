@@ -6,3 +6,6 @@ I-format
 
 J-formatมั้ง
     jalr rd imm
+
+O-formatมั้ง
+    halt
