@@ -221,3 +221,10 @@ def run(fn, text):
     1)ตอนใส่ค่าจะเหมือนrisc-vทั่วไปหรือตามตัวอย่าง
     2)๋jalr ในj-typeต่างจากjalr ในi-typeไหม
 """
+
+# NOTE #
+"""
+    1)อาจจะต้องเปลี่ยนformatตามจาร
+        -jalr
+        -halt, noop
+"""
