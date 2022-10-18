@@ -70,6 +70,7 @@ TT_FUNC     = 'FUNC'
 TT_RD       = 'RD'
 TT_RS1      = 'RS1'
 TT_RS2      = 'RS2'
+TT_IMM      = 'IMM'
 
 class Token:
     def __init__(self, type, value=None):
