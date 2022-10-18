@@ -2,11 +2,19 @@
     CONSTANTS
 """
 
+from os import curdir
+from tkinter import ALL
+from typing import TYPE_CHECKING
+
+
 DIGITS  =  '0123456789'
+
 RTYPE   =  ['add', 'nand'] 
 ITYPE   =  ['lw', 'sw', 'beq']
 JTYPE   =  ['jalr']
 OTYPE   =  ['halt', 'noop']
+
+INTYPE    =  RTYPE+ITYPE+JTYPE+OTYPE
 
 """ 
     ERROR
@@ -98,13 +106,18 @@ class Lexer:
             if self.current_char in '\t':   # check if space or blank skip them.
                 self.advance()
                 
-            elif self.current_char in RTYPE:
+            elif self.current_char in INTYPE:   # check it is type.
                 tokens.append(Token(TT_FUNC, self.current_char))
                 self.func = self.current_char
                 self.advance()  
                 
-            elif self.current_char.isnumeric():
-                if self.func == 'add' or self.func == 'nand':
+            elif self.current_char.isnumeric(): # check it is imm.
+                if self.func in ITYPE:
+                    if self.current_val == 2:
+                        pass
+
+            elif not(self.current_char.isalpha()):  # check is variable.
+                if self.func in RTYPE:
                     if self.current_val == 0:
                         tokens.append(Token(TT_RD, self.current_char))
                         self.current_val += 1
@@ -135,7 +148,7 @@ class Lexer:
 def run(fn, text):
     lexer = Lexer(fn, text)
     tokens, error = lexer.make_tokens()
-    
+
     return tokens, error
 
 
