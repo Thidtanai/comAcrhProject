@@ -1,0 +1,10 @@
+label + instruction + field0 + field1 + field2 comments
+
+
+- R-type instructions (add, nand) มี 3 fields (field0 คือ regA, field1 คือ regB, field2 คือ destReg)
+
+- I-type instructions (lw, sw, beq) มี 3 fields (field0 คือ regA, field1 คือ regB, field2 เป็น ค่าตัวเลขสำหรับ offsetField ซึ่งเป็นได้ทั้ง บวกหรือลบ หรือ symbolic address ซึ่งจะกล่าวถึงข้างล่าง
+
+- J-type instructions (jalr) มี 2 fields (field0 คือ regA, field1 คือ regB)
+
+- O-type instruction (noop, halt) ไม่มี field
