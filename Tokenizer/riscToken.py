@@ -14,7 +14,7 @@ ITYPE   =  ['lw', 'sw', 'beq']
 JTYPE   =  ['jalr']
 OTYPE   =  ['halt', 'noop']
 
-INTYPE    =  RTYPE+ITYPE+JTYPE+OTYPE
+INTYPE    =  RTYPE + ITYPE + JTYPE + OTYPE
 
 """ 
     ERROR
