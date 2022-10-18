@@ -1,2 +1,8 @@
 R-format
     add rd rs1 rs2
+
+I-format
+    beq rd rs1 imm
+
+J-formatมั้ง
+    jalr rd imm
