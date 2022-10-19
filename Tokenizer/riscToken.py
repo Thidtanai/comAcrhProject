@@ -66,10 +66,17 @@ class Position:
 """
 
 # define token type
-TT_FUNC     = 'FUNC'
-TT_RD       = 'RD'
-TT_RS1      = 'RS1'
-TT_RS2      = 'RS2'
+TT_LABEL    = 'label'
+
+TT_INST     = 'instruction'
+
+TT_REGA     = 'regA'
+TT_REGB     = 'regB'
+TT_DREG     = 'destReg'
+TT_OFSET    = 'ofset'
+
+TT_COMNT    = 'comment'
+
 TT_IMM      = 'IMM'
 
 class Token:
@@ -94,7 +101,8 @@ class Lexer:
         self.advance()
         
         self.current_val = 0
-        self.func = None
+        self.label = None
+        self.inst = None
         
     def advance(self):  # for moving current char to next char.
         self.pos.advance(self.current_char)
@@ -107,13 +115,13 @@ class Lexer:
             if self.current_char in '\t':   # check if space or blank skip them.
                 self.advance()
                 
-            elif self.current_char in INTYPE:   # check it is type.
-                tokens.append(Token(TT_FUNC, self.current_char))
-                self.func = self.current_char
+            elif self.current_char in INTYPE:   # check it is opcode.
+                tokens.append(Token(TT_INST, self.current_char))
+                self.inst = self.current_char
                 self.advance()  
             
             elif self.current_char.isnumeric(): # check it is imm.
-                if self.func in ITYPE:
+                if self.inst in ITYPE:
                     if self.current_val == 2:
                         tokens.append(Token(TT_IMM, self.current_char))
                         self.current_val += 1
@@ -122,7 +130,7 @@ class Lexer:
                         print("error")
                         pass
                 
-                if self.func in JTYPE:
+                if self.inst in JTYPE:
                     if self.current_val == 1:
                         tokens.append(Token(TT_IMM, self.current_char))
                         self.current_val += 1
@@ -131,23 +139,23 @@ class Lexer:
                         print("error")
                         self.advance()
                         pass
-                if self.func in OTYPE:
+                if self.inst in OTYPE:
                     print("error")
                     self.advance()
                     pass
 
             elif not(self.current_char.isalpha()):  # check is variable.
-                if self.func in RTYPE:
+                if self.inst in RTYPE:
                     if self.current_val == 0:
-                        tokens.append(Token(TT_RD, self.current_char))
+                        tokens.append(Token(TT_DREG, self.current_char))
                         self.current_val += 1
                         self.advance()
                     elif self.current_val == 1:
-                        tokens.append(Token(TT_RS1, self.current_char))
+                        tokens.append(Token(TT_REGA, self.current_char))
                         self.current_val += 1
                         self.advance()
                     elif self.current_val == 2:
-                        tokens.append(Token(TT_RS2, self.current_char))
+                        tokens.append(Token(TT_REGB, self.current_char))
                         self.current_val += 1
                         self.advance()
                     else :
@@ -155,13 +163,13 @@ class Lexer:
                         self.advance()
                         pass
 
-                if self.func in ITYPE:
+                if self.inst in ITYPE:
                     if self.current_val == 0:
-                        tokens.append(Token(TT_RD, self.current_char))
+                        tokens.append(Token(TT_DREG, self.current_char))
                         self.current_val += 1
                         self.advance()
                     elif self.current_val == 1:
-                        tokens.append(Token(TT_RS1, self.current_char))
+                        tokens.append(Token(TT_REGA, self.current_char))
                         self.current_val += 1
                         self.advance()
                     else :
@@ -169,9 +177,9 @@ class Lexer:
                         self.advance()
                         pass
 
-                if self.func in JTYPE:
+                if self.inst in JTYPE:
                     if self.current_val == 0:
-                        tokens.append(Token(TT_RD, self.current_char))
+                        tokens.append(Token(TT_DREG, self.current_char))
                         self.current_val += 1
                         self.advance()
                     else :
@@ -179,7 +187,7 @@ class Lexer:
                         self.advance()
                         pass
 
-                if self.func in OTYPE:
+                if self.inst in OTYPE:
                     print("error")
                     self.advance()
                     pass
