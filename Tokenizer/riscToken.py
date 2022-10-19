@@ -2,9 +2,12 @@
     CONSTANTS
 """
 
+from mimetypes import common_types
 from os import curdir
 from tkinter import ALL
 from typing import TYPE_CHECKING
+from typing_extensions import Self
+from xml.etree.ElementTree import Comment
 
 
 DIGITS  =  '0123456789'
@@ -76,6 +79,7 @@ TT_DREG     = 'destReg'
 TT_OFSET    = 'ofset'
 
 TT_COMNT    = 'comment'
+TT_NON      = 'nonField'
 
 TT_IMM      = 'IMM'
 
@@ -100,9 +104,10 @@ class Lexer:
         self.current_char = None
         self.advance()
         
-        self.current_val = 0
-        self.label = None
+        self.current_loop = 0
         self.inst = None
+        self.symbolic = False
+        self.not_comment = True
         
     def advance(self):  # for moving current char to next char.
         self.pos.advance(self.current_char)
@@ -110,93 +115,77 @@ class Lexer:
 
     def make_tokens(self):
         tokens = []
+        comment = ""
         
         while self.current_char != None:
             if self.current_char in '\t':   # check if space or blank skip them.
                 self.advance()
                 
             elif self.current_char in INTYPE:   # check it is opcode.
+                if self.current_loop == 0:
+                    tokens.append(Token(TT_NON))
+                    self.current_loop += 1
                 tokens.append(Token(TT_INST, self.current_char))
                 self.inst = self.current_char
+                self.current_loop += 1
                 self.advance()  
             
-            elif self.current_char.isnumeric(): # check it is imm.
-                if self.inst in ITYPE:
-                    if self.current_val == 2:
-                        tokens.append(Token(TT_IMM, self.current_char))
-                        self.current_val += 1
-                        self.advance()
-                    else :
-                        print("error")
-                        pass
-                
-                if self.inst in JTYPE:
-                    if self.current_val == 1:
-                        tokens.append(Token(TT_IMM, self.current_char))
-                        self.current_val += 1
-                        self.advance()
-                    else :
-                        print("error")
-                        self.advance()
-                        pass
-                if self.inst in OTYPE:
-                    print("error")
-                    self.advance()
-                    pass
-
-            elif not(self.current_char.isalpha()):  # check is variable.
+            elif self.current_loop == 0:    # check it has label
+                tokens.append(Token(TT_LABEL, self.current_char))
+                self.current_loop += 1
+                self.advance()
+            
+            elif self.not_comment: #check it not comment
                 if self.inst in RTYPE:
-                    if self.current_val == 0:
+                    if self.current_loop == 2: tokens.append(Token(TT_REGA, self.current_char))
+                    elif self.current_loop == 3: tokens.append(Token(TT_REGB, self.current_char))
+                    elif self.current_loop == 4: 
                         tokens.append(Token(TT_DREG, self.current_char))
-                        self.current_val += 1
-                        self.advance()
-                    elif self.current_val == 1:
-                        tokens.append(Token(TT_REGA, self.current_char))
-                        self.current_val += 1
-                        self.advance()
-                    elif self.current_val == 2:
-                        tokens.append(Token(TT_REGB, self.current_char))
-                        self.current_val += 1
-                        self.advance()
-                    else :
-                        print("error")
-                        self.advance()
-                        pass
+                        self.not_comment = False
+                    else: print("error")
 
                 if self.inst in ITYPE:
-                    if self.current_val == 0:
-                        tokens.append(Token(TT_DREG, self.current_char))
-                        self.current_val += 1
-                        self.advance()
-                    elif self.current_val == 1:
-                        tokens.append(Token(TT_REGA, self.current_char))
-                        self.current_val += 1
-                        self.advance()
-                    else :
-                        print("error")
-                        self.advance()
-                        pass
+                    if self.current_loop == 2: tokens.append(Token(TT_REGA, self.current_char))
+                    elif self.current_loop == 3: tokens.append(Token(TT_REGB, self.current_char))
+                    elif self.current_loop == 4:
+                        if not(self.current_char.isnumeric()): 
+                            self.symbolic = True
+                        tokens.append(Token(TT_OFSET, self.current_char))
+                        self.not_comment = False
+                    else : print("error")
 
                 if self.inst in JTYPE:
-                    if self.current_val == 0:
-                        tokens.append(Token(TT_DREG, self.current_char))
-                        self.current_val += 1
-                        self.advance()
-                    else :
-                        print("error")
-                        self.advance()
-                        pass
+                    if self.current_loop == 2: tokens.append(Token(TT_REGA, self.current_char))
+                    elif self.current_loop == 3: 
+                        tokens.append(Token(TT_REGB, self.current_char))
+                        tokens.append(Token(TT_NON))
+                        self.not_comment = False
+                    else : print("error")
 
                 if self.inst in OTYPE:
-                    print("error")
-                    self.advance()
-                    pass
+                    if self.current_loop < 4: 
+                        tokens.append(Token(TT_NON))
+                        tokens.append(Token(TT_NON))
+                        tokens.append(Token(TT_NON))
+                        self.not_comment = False
+                    else: 
+                        print("error")
                     
+                self.current_loop += 1
+                self.advance()
+
+            elif not(self.not_comment):  # check is variable.
+                comment += self.current_char
+                self.advance()
+
             else:
                 pos_start = self.pos.copy()
                 char = self.current_char
                 self.advance()
                 return [], IllegalCharError(pos_start, self.pos, "'" + char + "'")
+        
+        if not comment: tokens.append(Token(TT_NON))
+        else: tokens.append(Token(TT_COMNT, comment))
         
         return tokens, None
         
