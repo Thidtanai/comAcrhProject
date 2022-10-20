@@ -81,7 +81,7 @@ TT_OFSET    = 'ofset'
 TT_COMNT    = 'comment'
 TT_NON      = 'nonField'
 
-TT_IMM      = 'IMM'
+TT_ID      = 'index'
 
 class Token:
     def __init__(self, type, value=None):
@@ -117,6 +117,10 @@ class Lexer:
         tokens = []
         comment = ""
         
+        special_sw = False
+        print(self.text)
+        print(len(self.text))
+
         while self.current_char != None:
             if self.current_char in '\t':   # check if space or blank skip them.
                 self.advance()
@@ -127,6 +131,7 @@ class Lexer:
                     self.current_loop += 1
                 tokens.append(Token(TT_INST, self.current_char))
                 self.inst = self.current_char
+                if self.current_char in JTYPE or self.current_char in OTYPE: special_sw = True
                 self.current_loop += 1
                 self.advance()  
             
@@ -160,6 +165,7 @@ class Lexer:
                         tokens.append(Token(TT_REGB, self.current_char))
                         tokens.append(Token(TT_NON))
                         self.not_comment = False
+                        special_sw = False
                     else : print("error")
 
                 if self.inst in OTYPE:
@@ -168,11 +174,12 @@ class Lexer:
                         tokens.append(Token(TT_NON))
                         tokens.append(Token(TT_NON))
                         self.not_comment = False
+                        special_sw = False
                     else: 
                         print("error")
                     
                 self.current_loop += 1
-                self.advance()
+                if self.current_loop < len(self.text): self.advance()
 
             elif not(self.not_comment):  # check is variable.
                 comment += self.current_char
