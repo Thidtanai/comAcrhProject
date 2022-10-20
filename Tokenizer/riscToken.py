@@ -97,12 +97,14 @@ class Token:
 """
 
 class Lexer:
-    def __init__(self, fn, text):
+    def __init__(self, fn, text, index):
         self.fn = fn
         self.text = text.split()
         self.pos = Position(-1, 0, -1, fn, text)
         self.current_char = None
         self.advance()
+
+        self.index = index
         
         self.current_loop = 0
         self.inst = None
@@ -116,43 +118,37 @@ class Lexer:
     def make_tokens(self):
         tokens = []
         comment = ""
-        
-        special_sw = False
-        print(self.text)
-        print(len(self.text))
+        current_loop = 0
+        tokens.append(Token(TT_ID, self.index))
 
-        while self.current_char != None:
-            if self.current_char in '\t':   # check if space or blank skip them.
-                self.advance()
-                
-            elif self.current_char in INTYPE:   # check it is opcode.
-                if self.current_loop == 0:
+        while current_loop < 6 or current_loop <= len(self.text):
+            if self.current_char in INTYPE:   # check it is opcode.
+                if current_loop == 0:
                     tokens.append(Token(TT_NON))
-                    self.current_loop += 1
+                    current_loop += 1
                 tokens.append(Token(TT_INST, self.current_char))
                 self.inst = self.current_char
-                if self.current_char in JTYPE or self.current_char in OTYPE: special_sw = True
-                self.current_loop += 1
+                current_loop += 1
                 self.advance()  
             
-            elif self.current_loop == 0:    # check it has label
+            elif current_loop == 0:    # check it has label
                 tokens.append(Token(TT_LABEL, self.current_char))
-                self.current_loop += 1
+                current_loop += 1
                 self.advance()
             
             elif self.not_comment: #check it not comment
                 if self.inst in RTYPE:
-                    if self.current_loop == 2: tokens.append(Token(TT_REGA, self.current_char))
-                    elif self.current_loop == 3: tokens.append(Token(TT_REGB, self.current_char))
-                    elif self.current_loop == 4: 
+                    if current_loop == 2: tokens.append(Token(TT_REGA, self.current_char))
+                    elif current_loop == 3: tokens.append(Token(TT_REGB, self.current_char))
+                    elif current_loop == 4: 
                         tokens.append(Token(TT_DREG, self.current_char))
                         self.not_comment = False
                     else: print("error")
 
                 if self.inst in ITYPE:
-                    if self.current_loop == 2: tokens.append(Token(TT_REGA, self.current_char))
-                    elif self.current_loop == 3: tokens.append(Token(TT_REGB, self.current_char))
-                    elif self.current_loop == 4:
+                    if current_loop == 2: tokens.append(Token(TT_REGA, self.current_char))
+                    elif current_loop == 3: tokens.append(Token(TT_REGB, self.current_char))
+                    elif current_loop == 4:
                         if not(self.current_char.isnumeric()): 
                             self.symbolic = True
                         tokens.append(Token(TT_OFSET, self.current_char))
@@ -160,37 +156,42 @@ class Lexer:
                     else : print("error")
 
                 if self.inst in JTYPE:
-                    if self.current_loop == 2: tokens.append(Token(TT_REGA, self.current_char))
-                    elif self.current_loop == 3: 
+                    if current_loop == 2: tokens.append(Token(TT_REGA, self.current_char))
+                    elif current_loop == 3: 
                         tokens.append(Token(TT_REGB, self.current_char))
                         tokens.append(Token(TT_NON))
+                        #current_loop += 1
                         self.not_comment = False
-                        special_sw = False
                     else : print("error")
 
                 if self.inst in OTYPE:
-                    if self.current_loop < 4: 
+                    if current_loop == 2: 
                         tokens.append(Token(TT_NON))
                         tokens.append(Token(TT_NON))
                         tokens.append(Token(TT_NON))
+                        if self.current_char != None: comment += self.current_char + " "
+                        #current_loop += 2
                         self.not_comment = False
-                        special_sw = False
                     else: 
                         print("error")
                     
-                self.current_loop += 1
-                if self.current_loop < len(self.text): self.advance()
-
-            elif not(self.not_comment):  # check is variable.
-                comment += self.current_char
+                current_loop += 1
                 self.advance()
+
+            elif not(self.not_comment):  # check is comment.
+                if self.current_char != None:
+                    comment += self.current_char + " "
+                    self.advance()
+                current_loop += 1
 
             else:
                 pos_start = self.pos.copy()
                 char = self.current_char
                 self.advance()
-                return [], IllegalCharError(pos_start, self.pos, "'" + char + "'")
-        
+                return [], IllegalCharError(pos_start, self.pos, "'" + char + "'")     
+
+            #print(self.current_char)      
+
         if not comment: tokens.append(Token(TT_NON))
         else: tokens.append(Token(TT_COMNT, comment))
         
@@ -199,8 +200,8 @@ class Lexer:
 """ 
     RUN
 """
-def run(fn, text):
-    lexer = Lexer(fn, text)
+def run(fn, text, index):
+    lexer = Lexer(fn, text, index)
     tokens, error = lexer.make_tokens()
 
     return tokens, error
