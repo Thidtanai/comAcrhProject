@@ -2,8 +2,6 @@
     CONSTANTS
 """
 
-DIGITS  =  '0123456789'
-
 RTYPE   =  ['add', 'nand'] 
 ITYPE   =  ['lw', 'sw', 'beq']
 JTYPE   =  ['jalr']
@@ -31,10 +29,6 @@ class Error:
 class IllegalCharError(Error):
     def __init__(self, pos_start, pos_end, details):
         super().__init__(pos_start, pos_end, 'Illegal Character', details)
-
-class OpCodeError(Error):
-    def __init__(self, pos_start, pos_end, error_name, details):
-        super().__init__(pos_start, pos_end, 'Opcode not correct!', details)
 
 """ 
     POSITION
@@ -89,6 +83,17 @@ class Token:
         if self.value: return f'{self.type}:{self.value}'
         return f'{self.type}'
 
+    def get_type(self):
+        return self.type
+    def get_value(self):
+        if self.value: return self.value
+        return None
+    def get(self):
+        result_dict = None
+        if self.value: result_dict = {self.type: self.value}
+        else: result_dict = {self.type: None}
+        return result_dict
+
 """ 
     LEXER
 """
@@ -103,7 +108,6 @@ class Lexer:
 
         self.index = index
         
-        self.current_loop = 0
         self.inst = None
         self.symbolic = False
         self.not_comment = True
