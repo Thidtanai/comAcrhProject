@@ -61,17 +61,13 @@ class Position:
 
 # define token type
 TT_LABEL    = 'label'
-
 TT_INST     = 'instruction'
-
 TT_REGA     = 'regA'
 TT_REGB     = 'regB'
 TT_DREG     = 'destReg'
 TT_OFSET    = 'ofset'
-
 TT_COMNT    = 'comment'
-TT_NON      = 'nonField'
-
+TT_NON      = 'None'
 TT_ID      = 'index'
 
 class Token:
@@ -112,11 +108,11 @@ class Lexer:
         self.symbolic = False
         self.not_comment = True
         
-    def advance(self):  # for moving current char to next char.
+    def advance(self):  # for moving current field to next field.
         self.pos.advance(self.current_char)
         self.current_char = self.text[self.pos.idx] if self.pos.idx < len(self.text) else None
 
-    def make_tokens(self):
+    def make_tokens(self):  # for token text and classify it.
         tokens = []
         comment = ""
         current_loop = 0
