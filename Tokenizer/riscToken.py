@@ -2,14 +2,6 @@
     CONSTANTS
 """
 
-from mimetypes import common_types
-from os import curdir
-from tkinter import ALL
-from typing import TYPE_CHECKING
-from typing_extensions import Self
-from xml.etree.ElementTree import Comment
-
-
 DIGITS  =  '0123456789'
 
 RTYPE   =  ['add', 'nand'] 
@@ -218,27 +210,16 @@ def run(fn, text, index):
 
 # BUG NOW #
 
-""" Ploblem1    <FIXED> <use isnumeric -> DIGITS>
-    command > add 1 233 44
-    File <stdin>, line 1    <- why use 233 will error?
-    command > add 1 23 4
-    [FUNC:add, RD:1, RS1:23, RS2:4]
-    command > add 123 
-    [FUNC:add, RD:123]
-    command > add 1 233
-    File <stdin>, line 1
-    command > add 
+""" 
+
 """
 
 # QUESTION #
 """
-    1)ตอนใส่ค่าจะเหมือนrisc-vทั่วไปหรือตามตัวอย่าง
-    2)๋jalr ในj-typeต่างจากjalr ในi-typeไหม
+
 """
 
 # NOTE #
 """
-    1)อาจจะต้องเปลี่ยนformatตามจาร
-        -jalr
-        -halt, noop
+
 """
