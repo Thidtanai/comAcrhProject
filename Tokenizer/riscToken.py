@@ -97,12 +97,14 @@ class Token:
 """
 
 class Lexer:
-    def __init__(self, fn, text):
+    def __init__(self, fn, text, index):
         self.fn = fn
         self.text = text.split()
         self.pos = Position(-1, 0, -1, fn, text)
         self.current_char = None
         self.advance()
+
+        self.index = index
         
         self.current_loop = 0
         self.inst = None
@@ -117,6 +119,7 @@ class Lexer:
         tokens = []
         comment = ""
         current_loop = 0
+        tokens.append(Token(TT_ID, self.index))
 
         while current_loop < 6 or current_loop <= len(self.text):
             if self.current_char in INTYPE:   # check it is opcode.
@@ -169,7 +172,6 @@ class Lexer:
                         if self.current_char != None: comment += self.current_char + " "
                         #current_loop += 2
                         self.not_comment = False
-                        print(self.current_char)
                     else: 
                         print("error")
                     
@@ -198,8 +200,8 @@ class Lexer:
 """ 
     RUN
 """
-def run(fn, text):
-    lexer = Lexer(fn, text)
+def run(fn, text, index):
+    lexer = Lexer(fn, text, index)
     tokens, error = lexer.make_tokens()
 
     return tokens, error
