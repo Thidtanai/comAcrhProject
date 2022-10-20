@@ -16,8 +16,9 @@ RTYPE   =  ['add', 'nand']
 ITYPE   =  ['lw', 'sw', 'beq']
 JTYPE   =  ['jalr']
 OTYPE   =  ['halt', 'noop']
+SPTYPE  =  ['.fill']
 
-INTYPE    =  RTYPE+ITYPE+JTYPE+OTYPE
+ISOP    =  RTYPE+ITYPE+JTYPE+OTYPE+SPTYPE
 
 """ 
     ERROR
@@ -122,7 +123,7 @@ class Lexer:
         tokens.append(Token(TT_ID, self.index))
 
         while current_loop < 6 or current_loop <= len(self.text):
-            if self.current_char in INTYPE:   # check it is opcode.
+            if self.current_char in ISOP:   # check it is opcode.
                 if current_loop == 0:
                     tokens.append(Token(TT_NON))
                     current_loop += 1
@@ -174,6 +175,14 @@ class Lexer:
                         self.not_comment = False
                     else: 
                         print("error")
+                
+                if self.inst in SPTYPE:
+                    if current_loop == 2: 
+                        tokens.append(Token(TT_REGA, self.current_char))
+                        tokens.append(Token(TT_NON))
+                        tokens.append(Token(TT_NON))
+                        self.not_comment = False
+                    else : print("error")
                     
                 current_loop += 1
                 self.advance()
