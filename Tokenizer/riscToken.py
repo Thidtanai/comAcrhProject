@@ -32,6 +32,10 @@ class IllegalCharError(Error):
     def __init__(self, pos_start, pos_end, details):
         super().__init__(pos_start, pos_end, 'Illegal Character', details)
 
+class OpCodeError(Error):
+    def __init__(self, pos_start, pos_end, error_name, details):
+        super().__init__(pos_start, pos_end, 'Opcode not correct!', details)
+
 """ 
     POSITION
 """
@@ -189,13 +193,10 @@ class Lexer:
                 pos_start = self.pos.copy()
                 char = self.current_char
                 self.advance()
-                return [], IllegalCharError(pos_start, self.pos, "'" + char + "'")     
-
-            #print(self.current_char)      
+                return [], IllegalCharError(pos_start, self.pos, "'" + char + "'")      
 
         if not comment: tokens.append(Token(TT_NON))
         else: tokens.append(Token(TT_COMNT, comment))
-        
         return tokens, None
         
 """ 
@@ -206,7 +207,6 @@ def run(fn, text, index):
     tokens, error = lexer.make_tokens()
 
     return tokens, error
-
 
 # BUG NOW #
 
